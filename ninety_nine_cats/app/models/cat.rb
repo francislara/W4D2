@@ -5,7 +5,11 @@ class Cat < ApplicationRecord
   validates :color, inclusion: CAT_COLORS
   validates :sex, inclusion: ["M", "F"]
 
-
+  has_many :cat_rental_requests,
+    primary_key: :id,
+    foreign_key: :cat_id,
+    class_name: :CatRentalRequest,
+    dependent: :destroy
 
   def age
     diff = Date.today - birth_date

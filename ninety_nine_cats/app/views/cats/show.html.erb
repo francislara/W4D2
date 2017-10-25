@@ -1,7 +1,5 @@
 <h2>Show</h2>
 
-
-
 <table>
   <tr>
     <% @cat.attributes.keys.each do |key|  %>
@@ -13,4 +11,28 @@
     <td> <%= value %> </td>
     <% end %>
   </tr>
+</table>
+
+
+<h2>Approved Rentals</h2>
+<table>
+  <tr>
+    <th>Start Date</th>
+    <th>End Date</th>
+    <th>Approve</th>
+    <th>Deny</th>
+  </tr>
+
+  <% CatRentalRequest.order(:start_date).each do |rental| %>
+  <tr>
+    <% if rental.cat_id == @cat.id %>
+      <td><%= rental.start_date %></td>
+      <td><%= rental.end_date %></td>
+      <% if rental.pending? %>
+        <td><%= button_to "Approve", approve_cat_rental_request_url(rental) %></td>
+        <td><%= button_to "Deny", deny_cat_rental_request_url(rental) %></td>
+      <% end %>
+    <% end %>
+  </tr>
+  <% end %>
 </table>
