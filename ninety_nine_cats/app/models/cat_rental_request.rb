@@ -10,8 +10,8 @@ class CatRentalRequest < ApplicationRecord
 
   def overlapping_requests
     CatRentalRequest.where(
-      "start_date BETWEEN ? AND ?
-      OR end_date BETWEEN ? AND ?",
+      "(start_date > ? AND start_date < ?)
+      OR (end_date > ? AND end_date < ?)",
       self.start_date, self.end_date,
       self.start_date, self.end_date)
       .where.not(id: self.id)
@@ -41,7 +41,10 @@ class CatRentalRequest < ApplicationRecord
   end
 
   def deny!
-    self.status = 'DENIED'
+    CatRentalRequest.transaction do
+      self.status = 'DENIED'
+      self.save
+    end
   end
 
   def pending?
